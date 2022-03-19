@@ -1,10 +1,10 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shop_getx/controller/category_controller.dart';
 
 import 'package:get/get.dart';
+import 'package:shop_getx/pages/cart_screen.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -18,7 +18,23 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        elevation: 0,
+        title: Text('My Shop', style: TextStyle(color: Colors.black)),
+        centerTitle: false,
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+          IconButton(
+              onPressed: () {}, icon: Icon(Icons.notifications_none_outlined)),
+          IconButton(
+              onPressed: () {
+                Get.to(CartScreen());
+              },
+              icon: Icon(Icons.shopping_cart_outlined)),
+        ],
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
       backgroundColor: Colors.grey.shade100,
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -48,20 +64,36 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               IconButton(
-                  onPressed: () {
-                    _categoryController.toggleGrid();
-                  },
-                  icon: Icon(Icons.filter_list)),
+                onPressed: () {
+                  _categoryController.toggleGrid();
+                },
+                icon: Icon(Icons.grid_view),
+              ),
             ],
           ),
           Obx(
             () => _categoryController.loading2.value
-                ? Expanded(child: Center(child: CircularProgressIndicator()))
+                ? Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.amber,
+                      ),
+                    ),
+                  )
                 : category(),
+          ),
+          SizedBox(
+            height: 10,
           ),
           Obx(
             () => _categoryController.loading.value
-                ? Expanded(child: Center(child: CircularProgressIndicator()))
+                ? Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.amber,
+                      ),
+                    ),
+                  )
                 : Expanded(
                     child: _categoryController.showGrid.value
                         ? gridViewProduct()
@@ -94,15 +126,14 @@ class _HomeViewState extends State<HomeView> {
             margin: EdgeInsets.only(right: 8),
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: index == selectedCategory
-                  ? Colors.black87
-                  : Colors.transparent,
+              color:
+                  index == selectedCategory ? Colors.amber : Colors.transparent,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               _categoryController.categories[index],
               style: TextStyle(
-                color: index == selectedCategory ? Colors.white : Colors.black,
+                color: Colors.black,
               ),
             ),
           ),
@@ -114,16 +145,21 @@ class _HomeViewState extends State<HomeView> {
   ListView listViewProduct() {
     return ListView.builder(
         itemCount: _categoryController.product.length,
-        itemBuilder: (context, index) => Card(
-              child: Container(
-                //padding:EdgeInsets.only(top: 10) ,
-                height: 120,
-                //width: 100,
-                margin: EdgeInsets.only(bottom: 8),
-                //color: Colors.red,
-                child: Row(
-                  children: [
-                    Container(
+        itemBuilder: (context, index) => Container(
+              height: 120,
+              //width: 100,
+              margin: EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.withOpacity(.5),
+                    offset: Offset(3, 2),
+                    blurRadius: 7)
+              ]),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
                       height: 100,
                       width: 100,
                       //color: Colors.green,
@@ -135,73 +171,14 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _categoryController.product[index]['title'],
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                _categoryController.product[index]
-                                    ['description'],
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Text(
-                              '\$${_categoryController.product[index]['price']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ));
-  }
-
-  GridView gridViewProduct() {
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 0.79, crossAxisCount: 2),
-        itemCount: _categoryController.product.length,
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 0.0,
-            child: Container(
-              padding: EdgeInsets.only(top: 8),
-              height: 150,
-              margin: EdgeInsets.only(bottom: 8, right: 8),
-              child: Column(
-                children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                            _categoryController.product[index]['image']),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: 15),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      color: Colors.amber,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -212,12 +189,10 @@ class _HomeViewState extends State<HomeView> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              _categoryController.product[index]['description'],
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                          Text(
+                            _categoryController.product[index]['description'],
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             '\$${_categoryController.product[index]['price']}',
@@ -229,25 +204,74 @@ class _HomeViewState extends State<HomeView> {
                   )
                 ],
               ),
+            ));
+  }
+
+  GridView gridViewProduct() {
+    return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 0.79, crossAxisCount: 2),
+        itemCount: _categoryController.product.length,
+        itemBuilder: (context, index) {
+          return Container(
+            height: 150,
+            margin: EdgeInsets.only(bottom: 8, right: 4, left: 4),
+            decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(.5),
+                offset: Offset(3, 2),
+                blurRadius: 7,
+              ),
+            ]),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(
+                            _categoryController.product[index]['image']),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Expanded(
+                  child: Container(
+                    color: Colors.amber,
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _categoryController.product[index]['title'],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          _categoryController.product[index]['description'],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          '\$${_categoryController.product[index]['price']}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
           );
         });
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      title: Text('My Shop', style: TextStyle(color: Colors.black)),
-      centerTitle: true,
-      leading: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
-      actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-        IconButton(
-            onPressed: () {}, icon: Icon(Icons.notifications_none_outlined)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart_outlined)),
-      ],
-      iconTheme: IconThemeData(color: Colors.black),
-    );
   }
 }
